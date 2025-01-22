@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query User ID</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+        }
+        h2 {
+            color: #333;
+        }
+        label, button {
+            display: block;
+            margin: 10px 0;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Query User ID by Username</h1>
+    <label for="get-username">Enter Username</label>
+    <input type="text" id="get-username" placeholder="Enter username">
+    <button onclick="getUserId()">Get User ID</button>
+
+    <!-- Output the User ID -->
+    <div id="user-id-output"></div>
+
+    <!-- Link back to main page -->
+    <a href="index.html">Go Back to Main Page</a>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000";
+
+        async function getUserId() {
+            const username = document.getElementById("get-username").value;
+
+            const outputElement = document.getElementById("user-id-output");
+            outputElement.textContent = "";
+
+            if (!username) {
+                outputElement.textContent = "Error: Username cannot be empty.";
+                outputElement.style.color = "red";
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/get-user-id/${username}`, {
+                    method: "GET"
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    outputElement.textContent = `User ID: ${data.user_id}`;
+                    outputElement.style.color = "blue";
+                } else {
+                    const error = await response.json();
+                    outputElement.textContent = `Error: ${error.detail}`;
+                    outputElement.style.color = "red";
+                }
+            } catch (error) {
+                outputElement.textContent = "Error: Unable to connect to the server.";
+                outputElement.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>

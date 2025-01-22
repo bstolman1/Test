@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+        }
+        h2 {
+            color: #333;
+        }
+        label, button {
+            display: block;
+            margin: 10px 0;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Management</h1>
+
+    <!-- Create User -->
+    <h2>Create User</h2>
+    <label for="create-username">Username</label>
+    <input type="text" id="create-username" placeholder="Enter username">
+    <label for="create-email">Email</label>
+    <input type="email" id="create-email" placeholder="Enter email">
+    <label for="create-password">Password</label>
+    <input type="password" id="create-password" placeholder="Enter password">
+    <button onclick="createUser()">Create User</button>
+
+    <!-- Get User -->
+    <h2>Get User</h2>
+    <label for="get-user-id">User ID</label>
+    <input type="number" id="get-user-id" placeholder="Enter user ID">
+    <button onclick="getUser()">Get User</button>
+
+    <!-- Update User -->
+    <h2>Update User</h2>
+    <label for="update-user-id">User ID</label>
+    <input type="number" id="update-user-id" placeholder="Enter user ID">
+    <label for="update-username">New Username</label>
+    <input type="text" id="update-username" placeholder="Enter new username">
+    <label for="update-email">New Email</label>
+    <input type="email" id="update-email" placeholder="Enter new email">
+    <label for="update-password">New Password</label>
+    <input type="password" id="update-password" placeholder="Enter new password">
+    <button onclick="updateUser()">Update User</button>
+
+    <!-- Delete User -->
+    <h2>Delete User</h2>
+    <label for="delete-user-id">User ID</label>
+    <input type="number" id="delete-user-id" placeholder="Enter user ID">
+    <button onclick="deleteUser()">Delete User</button>
+
+    <!-- Link to Query Username -->
+    <a href="query.html">Go to Username Query Page</a>
+
+    <div id="response"></div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000";
+
+        async function createUser() {
+            const username = document.getElementById("create-username").value;
+            const email = document.getElementById("create-email").value;
+            const password = document.getElementById("create-password").value;
+
+            const response = await fetch(`${API_URL}/users`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password })
+            });
+
+            const data = await response.json();
+            document.getElementById("response").textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function getUser() {
+            const userId = document.getElementById("get-user-id").value;
+
+            const response = await fetch(`${API_URL}/users/${userId}`, {
+                method: "GET"
+            });
+
+            const data = await response.json();
+            document.getElementById("response").textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function updateUser() {
+            const userId = document.getElementById("update-user-id").value;
+            const username = document.getElementById("update-username").value;
+            const email = document.getElementById("update-email").value;
+            const password = document.getElementById("update-password").value;
+
+            const response = await fetch(`${API_URL}/users/${userId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password })
+            });
+
+            const data = await response.json();
+            document.getElementById("response").textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function deleteUser() {
+            const userId = document.getElementById("delete-user-id").value;
+
+            const response = await fetch(`${API_URL}/users/${userId}`, {
+                method: "DELETE"
+            });
+
+            if (response.status === 204) {
+                document.getElementById("response").textContent = "User deleted successfully.";
+            } else {
+                const data = await response.json();
+                document.getElementById("response").textContent = JSON.stringify(data, null, 2);
+            }
+        }
+    </script>
+</body>
+</html>
